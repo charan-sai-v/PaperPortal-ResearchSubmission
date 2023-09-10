@@ -1,0 +1,43 @@
+
+{% extends "_base.html" %}
+
+{% block title %} Author Email Confirmation {% endblock %}
+
+{% block content %}
+
+<!--Author Navbar-->
+{% include './author_navbar.html' %}
+
+<div class="container mx-auto">
+    <div class="flex justify-center px-6">
+    
+    <div class="max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+        <a href="#">
+            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Email Confirmation</h5>
+        </a>
+        {% if error %}
+         <p class="bg-red-200 text-center text-red-800 p-3 rounded-lg">
+            {{ error }}
+            
+        </p>
+        <a class=" text-sm   text-blue-500 align-baseline hover:text-blue-800" href="/author/resend_confirmation_mail">
+            Click to Resend Email Confirmation
+        </a>
+        {% endif %}
+        {% if success %}
+        <p class="text-sm text-center text-gray-700 bg-green-200 rounded-sm dark:text-gray-400">
+            {{success}}
+        </p>
+        <a class=" text-sm   text-blue-500 align-baseline hover:text-blue-800" href="/author/login">
+            Click to Login
+        </a>
+        {% endif %}
+
+        
+    </div>
+    </div>
+
+</div>
+
+
+{% endblock %}
