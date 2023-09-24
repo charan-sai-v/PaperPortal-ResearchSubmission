@@ -39,10 +39,10 @@ class AuthorRegistrationView(View):
         email = request.POST['email']
         password = request.POST['password']
 
-        # generate token for email verification
-        token = get_random_string(length=32)
         if Author.objects.filter(email=email).exists():
             return render(request, 'author/author_registration.html', {'error': 'Email already exists'})
+        # generate token for email verification
+        token = get_random_string(length=32)
         
         # password hashing
         value = {
@@ -56,7 +56,7 @@ class AuthorRegistrationView(View):
         user = {'email': email, 'name': name}
         
         # send mail
-        send_confirmation_mail(user, token)
+        # send_confirmation_mail(user, token)
         return render(request, 'author/author_registration.html', {'success': 'Registration Successful, Please confirm your email'})
     
 
@@ -75,6 +75,9 @@ class AuthorLoginView(View):
             user = Author.objects.get(email=email)
             if check_password(password, user.password):
                 if user.is_confirmed == False:
+                    # remove this line after mail server setup
+                    user.is_confirmed = True
+                    user.save()
                     return render(request, 'author/author_login.html', {'error': 'Please confirm your email'})
                 else:
                     # generate token for session

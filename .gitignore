@@ -3,3 +3,10 @@ node_modules/
 package-lock.json
 .env
 notes.txt
+
+# pycache
+__pycache__/
+
+
+# sqlite
+*.sqlite3
