@@ -1,0 +1,117 @@
+{% extends "./_base.html" %}
+
+{% block title %} Review Paper By ID {% endblock %}
+
+{% block content %}
+
+
+
+<!-- Review Paper By ID -->
+<h1 class="text-3xl text-black dark:text-white text-center font-bold space-y-2">Review Paper </h1>
+
+<div class="bg-white dark:bg-gray-800 shadow rounded-lg h-full p-5 flex justify-center">
+    <div class="max-w-2xl w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ">
+        <a href="#">
+            <h5 class="mb-3 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Paper Title: {{ paper.title }}</h5>
+        </a>
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Abstract:</b> {{ paper.abstract }}</p>
+        <!--Download Paper-->
+        <a href="/maineditor/download_paper/{{ paper.id }}">
+            <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5  text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center py-2.5">
+                <svg class="w-5 h-5 mr-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
+                    <path d="M18 12h-2.55l-2.975 2.975a3.5 3.5 0 0 1-4.95 0L4.55 12H2a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2Zm-3 5a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                  </svg>
+                Download Paper
+            </button>
+        </a>
+        <!-- Author Details -->
+        <div>
+            <h1 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Author Details</h1>
+            <div class="mb-3 font-normal text-gray-700 dark:text-gray-400 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 p-6"> 
+                {% if paper.author_1 %}
+                <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">Author 1: {{ paper.author_1 }}</h5>
+                <!-- <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Email:</b> {{ author_1.email }}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Phone:</b> {{ author_1.phone }}</p> -->
+            {% endif %}
+            {% if paper.author_2 %}
+                <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">Author 2: {{ paper.author_2 }}</h5>
+                <!-- <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Email:</b> {{ author_2.email }}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Phone:</b> {{ author_2.phone }}</p> -->
+            {% endif %}
+            {% if paper.author_3 %}
+                <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">Author 3: {{ paper.author_3 }}</h5>
+                <!-- <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Email:</b> {{ author_3.email }}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Phone:</b> {{ author_3.phone }}</p> -->
+            {% endif %}
+            {% if paper.author_4 %}
+                <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">Author 4: {{ paper.author_4 }}</h5>
+                <!-- <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Email:</b> {{ author_4.email }}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Phone:</b> {{ author_4.phone }}</p> -->
+            {% endif %}
+            {% if paper.author_5 %}
+                <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">Author 5: {{ paper.author_5 }}</h5>
+                <!-- <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Email:</b> {{ author_5.email }}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Phone:</b> {{ author_5.phone }}</p> -->
+            {% endif %}
+            {% if paper.author_6 %}
+                <h5 class="mb-2 text-lg font-bold tracking-tight text-gray-900 dark:text-white">Author 6: {{ paper.author_6}} </h5>
+                <!-- <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Email:</b> {{ author_6.email }}</p>
+                <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Phone:</b> {{ author_6.phone }}</p> -->
+            {% endif %}
+            </div>
+        </div>
+        
+        <!-- paper conference -->
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Conference:</b> {{ paper.conference }}</p>
+        <!-- paper submitted -->
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Submitted:</b> {{ paper.updated_at }}</p>
+        <!--Review Details-->
+        {% if paper.status == 'pending' %}
+            <form method="post" action="/maineditor/review_paper/{{ paper.id }}">
+                {% csrf_token %}
+                <div>
+                    <h3 class="mb-4 font-semibold text-gray-900 dark:text-white">Review Details</h3>
+                    <ul class="items-center w-full text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg sm:flex dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                            <div class="flex items-center pl-3">
+                                <input id="horizontal-list-radio-license" name="status" type="radio" value="accept" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                <label for="horizontal-list-radio-license" class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Accepted </label>
+                            </div>
+                        </li>
+                        <li class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r dark:border-gray-600">
+                            <div class="flex items-center pl-3">
+                                <input id="horizontal-list-radio-id" type="radio" value="reject" name="status" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500">
+                                <label for="horizontal-list-radio-id" class="w-full py-3 ml-2 text-sm font-medium text-gray-900 dark:text-gray-300">Rejected</label>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Remarks</label>
+                    <textarea id="message" rows="4" name="remarks" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
+                </div>
+                <div class="mt-4">
+                    <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5  text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center py-2.5">
+                        Submit Review
+                    </button>
+                </div>
+            </form>
+        {% else %}
+        <!-- paper status-->
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Status:</b> {{ paper.status }}</p>
+        <!-- paper remark -->
+        {% if paper.review_remark_1 %}
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Remark 1:</b> {{ paper.review_remark_1 }}</p>
+        {% endif %}
+        {% if paper.review_remark_2 %}
+        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Remark 2:</b> {{ paper.review_remark_2 }}</p>
+        {% endif %}
+        {% endif %}
+        
+    </div>
+        
+
+</div>
+
+{% endblock %}

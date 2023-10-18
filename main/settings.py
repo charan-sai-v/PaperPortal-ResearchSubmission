@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'subeditor',
     'home',
     'compressor',  # new
+    'mailer',
 ]
 
 # compressor settings
@@ -53,7 +54,11 @@ COMPRESS_ROOT = BASE_DIR / 'static'
 
 COMPRESS_ENABLED = True
 
-STATICFILES_FINDERS = ('compressor.finders.CompressorFinder',)
+STATICFILES_FINDERS = [
+    'compressor.finders.CompressorFinder',
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -121,20 +126,21 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
+# India Kolkata timezone
+TIME_ZONE = 'Asia/Kolkata'
 LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
+USE_L10N = True
 
-USE_TZ = True
+
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / "static",]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 # Default primary key field type
@@ -145,12 +151,24 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # mail settings
 # outlook smtp config
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp-mail.outlook.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 's.rsolutions@outlook.com'
+# EMAIL_HOST_PASSWORD = 'klu@2002'
+
+
+# SMTP CONFIG
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-mail.outlook.com'
-EMAIL_USE_TLS = True
+EMAIL_HOST = 'mail.wpless.com' 
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 's.rsolutions@outlook.com'
-EMAIL_HOST_PASSWORD = 'klu@2002'
+EMAIL_HOST_USER = 'support@wpless.com'
+EMAIL_HOST_PASSWORD = 'charansai@123'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+
 
 # base url
-BASE_URL = 'http://localhost:8000/'
+# BASE_URL = 'http://localhost:8000/'
