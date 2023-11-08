@@ -15,7 +15,7 @@
             <h5 class="mb-3 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Paper Title: {{ paper.title }}</h5>
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Abstract:</b> {{ paper.abstract }}</p>
         <!--Download Paper-->
-        <a href="/maineditor/download_paper/{{ paper.id }}">
+        <a href="/author/download_paper/{{ paper.id }}">
             <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5  text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 inline-flex items-center py-2.5">
                 <svg class="w-5 h-5 mr-2 text-white dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M14.707 7.793a1 1 0 0 0-1.414 0L11 10.086V1.5a1 1 0 0 0-2 0v8.586L6.707 7.793a1 1 0 1 0-1.414 1.414l4 4a1 1 0 0 0 1.416 0l4-4a1 1 0 0 0-.002-1.414Z"/>
@@ -73,9 +73,7 @@
         {% if paper.review_remark_1 %}
         <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Remark 1:</b> {{ paper.review_remark_1 }}</p>
         {% endif %}
-        {% if paper.review_remark_2 %}
-        <p class="mb-3 font-normal text-gray-700 dark:text-gray-400"><b>Remark 2:</b> {{ paper.review_remark_2 }}</p>
-        {% endif %}
+
     </div>
     {% else %}
     <div class="max-w-2xl w-full p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 ">

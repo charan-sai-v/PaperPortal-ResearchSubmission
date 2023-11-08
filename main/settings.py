@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'author',
     'maineditor',
-    'subeditor',
     'home',
     'compressor',  # new
     'mailer',

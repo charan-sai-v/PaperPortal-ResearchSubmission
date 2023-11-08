@@ -316,9 +316,9 @@ class MainEditorReviewPaperByIdView(View):
             status = request.POST.get('status')
             paper = Paper.objects.get(id=paper_id)
             if status == 'accept':
-                paper.status = 'Main Editor Accepted'
+                paper.status = 'Accepted'
             else:
-                paper.status = 'Main Editor Rejected'
+                paper.status = 'Rejected'
             paper.review_remark_1 = request.POST.get('remarks')
             paper.is_review_1_completed = True
             maineditor = MainEditor.objects.get(login_token=request.session['token'])

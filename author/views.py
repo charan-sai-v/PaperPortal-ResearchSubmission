@@ -1,7 +1,6 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.views import View
-from django.views.generic import TemplateView
 from .models import Author, Contact, Paper
 from .forms import AuthorForm
 from django.contrib.auth.hashers import make_password
@@ -25,6 +24,7 @@ def login_required(func):
             return func(request, author, *args, **kwargs)
         except:
             return redirect('/author/login')
+
     return wrapper
 
 
@@ -35,7 +35,7 @@ class AuthorRegistrationView(View):
     def get(self, request):
         form = AuthorForm()
         return render(request, 'author/author_registration.html', {'form': form})
-    
+
     # POST request
     def post(self, request):
         name = request.POST['name']
@@ -45,13 +45,14 @@ class AuthorRegistrationView(View):
 
         # check if password and confirm password are same
         if password != confirm_pasword:
-            return render(request, 'author/author_registration.html', {'error': 'Password and Confirm Password are not same'})
+            return render(request, 'author/author_registration.html',
+                          {'error': 'Password and Confirm Password are not same'})
 
         if Author.objects.filter(email=email).exists():
             return render(request, 'author/author_registration.html', {'error': 'Email already exists'})
         # generate token for email verification
         token = get_random_string(length=32)
-        
+
         # password hashing
         value = {
             'name': name,
@@ -62,11 +63,12 @@ class AuthorRegistrationView(View):
         form = Author(**value)
         form.save()
         user = {'email': email, 'name': name}
-        
+
         # send mail
         send_confirmation_mail(user, token)
-        return render(request, 'author/author_registration.html', {'success': 'Registration Successful, Please confirm your email'})
-    
+        return render(request, 'author/author_registration.html',
+                      {'success': 'Registration Successful, Please confirm your email'})
+
 
 # Author Login View
 class AuthorLoginView(View):
@@ -82,8 +84,6 @@ class AuthorLoginView(View):
             return redirect('/author/dashboard')
         except:
             return render(request, 'author/author_login.html')
-
-
 
     # POST request
     def post(self, request):
@@ -117,73 +117,75 @@ class AuthorLoginView(View):
                 return render(request, 'author/author_login.html', {'error': 'Invalid Credentials'})
         except:
             return render(request, 'author/author_login.html', {'error': 'Invalid Credentials'})
-        
+
 
 # Author Email Confirmation View
 class AuthorEmailConfirmationView(View):
-        # GET request
-        def get(self, request, token):
-            try:
-                user = Author.objects.get(token=token)
-                if user.is_confirmed == True:
-                    return render(request, 'author/author_email_confirmation.html', {'success': 'Email already confirmed'})
-                user.is_confirmed = True
-                user.save()
-                return render(request, 'author/author_email_confirmation.html', {'success': 'Email confirmed'})
-            except:
-                return render(request, 'author/author_email_confirmation.html', {'error': 'Invalid Token'})
-            
+    # GET request
+    def get(self, request, token):
+        try:
+            user = Author.objects.get(token=token)
+            if user.is_confirmed == True:
+                return render(request, 'author/author_email_confirmation.html', {'success': 'Email already confirmed'})
+            user.is_confirmed = True
+            user.save()
+            return render(request, 'author/author_email_confirmation.html', {'success': 'Email confirmed'})
+        except:
+            return render(request, 'author/author_email_confirmation.html', {'error': 'Invalid Token'})
+
 
 # Author Resend Confirmation Mail View
 class AuthorResendConfirmationMailView(View):
-        
-        # GET request
-        def get(self, request):
-            return render(request, 'author/author_resend_confirmation_mail.html')
-        
-        # POST request
-        def post(self, request):
-            try:
-                email = request.POST['email']
-                user = Author.objects.get(email=email)
-                if user.is_confirmed == True:
-                    return render(request, 'author/author_resend_confirmation_mail.html', {'error': 'Email already confirmed'})
-                else:
-                    token = get_random_string(length=32)
-                    user.token = token
-                    user.save()
-                    name = user.name
-                    user = {'email': email, 'name': name}
-                    send_confirmation_mail(user, token)
-                    return render(request, 'author/author_resend_confirmation_mail.html', {'success': 'Confirmation mail sent'})
-            except:
-                return render(request, 'author/author_resend_confirmation_mail.html', {'error': 'Email does not exist'})
-            
+
+    # GET request
+    def get(self, request):
+        return render(request, 'author/author_resend_confirmation_mail.html')
+
+    # POST request
+    def post(self, request):
+        try:
+            email = request.POST['email']
+            user = Author.objects.get(email=email)
+            if user.is_confirmed == True:
+                return render(request, 'author/author_resend_confirmation_mail.html',
+                              {'error': 'Email already confirmed'})
+            else:
+                token = get_random_string(length=32)
+                user.token = token
+                user.save()
+                name = user.name
+                user = {'email': email, 'name': name}
+                send_confirmation_mail(user, token)
+                return render(request, 'author/author_resend_confirmation_mail.html',
+                              {'success': 'Confirmation mail sent'})
+        except:
+            return render(request, 'author/author_resend_confirmation_mail.html', {'error': 'Email does not exist'})
+
 
 # Author Forgot Password View
 class AuthorForgotPasswordView(View):
-            def get(self, request):
-                return render(request, 'author/author_forgot_password.html')
-            
-            # POST request
-            def post(self, request):
-                try:
-                    email = request.POST['email']
-                    user = Author.objects.get(email=email)
-                    if user.is_confirmed == False:
-                        return render(request, 'author/author_forgot_password.html', {'error': 'Please confirm your email'})
-                    else:
-                        token = get_random_string(length=32)
-                        user.password_reset_token = token
-                        user.password_reset_token_expires_at = timezone.now() + timezone.timedelta(minutes=15)
-                        user.save()
-                        name = user.name
-                        user = {'email': email, 'name': name}
-                        send_password_reset_mail(user, token)
-                        return render(request, 'author/author_forgot_password.html', {'success': 'Password reset mail sent'})
-                except:
-                    return render(request, 'author/author_forgot_password.html', {'error': 'Email does not exist'})
-                
+    def get(self, request):
+        return render(request, 'author/author_forgot_password.html')
+
+    # POST request
+    def post(self, request):
+        try:
+            email = request.POST['email']
+            user = Author.objects.get(email=email)
+            if user.is_confirmed == False:
+                return render(request, 'author/author_forgot_password.html', {'error': 'Please confirm your email'})
+            else:
+                token = get_random_string(length=32)
+                user.password_reset_token = token
+                user.password_reset_token_expires_at = timezone.now() + timezone.timedelta(minutes=15)
+                user.save()
+                name = user.name
+                user = {'email': email, 'name': name}
+                send_password_reset_mail(user, token)
+                return render(request, 'author/author_forgot_password.html', {'success': 'Password reset mail sent'})
+        except:
+            return render(request, 'author/author_forgot_password.html', {'error': 'Email does not exist'})
+
 
 # Author Reset Password View
 class AuthorResetPasswordView(View):
@@ -197,10 +199,10 @@ class AuthorResetPasswordView(View):
                 return render(request, 'author/author_reset_password.html', {'change_password': 'true', 'token': token})
         except:
             return render(request, 'author/author_reset_password.html', {'error': 'Invalid Token'})
-        
+
     # POST request
     def post(self, request, token):
-        
+
         password = request.POST['password']
         try:
             user = Author.objects.get(password_reset_token=token)
@@ -211,12 +213,13 @@ class AuthorResetPasswordView(View):
                 user.password_reset_token = None
                 user.password_reset_token_expires_at = None
                 user.save()
-                return render(request, 'author/author_reset_password.html', {'success': 'Password changed successfully'})
+                return render(request, 'author/author_reset_password.html',
+                              {'success': 'Password changed successfully'})
         except:
             return render(request, 'author/author_reset_password.html', {'error': 'Invalid Token'})
-        
 
-#Author Logout View
+
+# Author Logout View
 class AuthorLogoutView(View):
     # GET request
     def get(self, request):
@@ -225,7 +228,7 @@ class AuthorLogoutView(View):
             return redirect('/author/login')
         except:
             return redirect('/author/login')
-        
+
 
 # Author Dashboard View
 class AuthorDashboardView(View):
@@ -235,17 +238,22 @@ class AuthorDashboardView(View):
 
     # GET request
     def get(self, request, author):
-        # get the papers of the author
-        author = Author.objects.get(login_token=request.session['token'])
-        # get the papers of the author that should be 5 recent papers
-        papers = Paper.objects.filter(author_id=author).order_by('-id')[:5]
-        # get the conference which is is available for paper submission
-        current_date = timezone.now().date()
-        conference = Conference.objects.get(paper_submission_deadline__gte=current_date)
-        if conference == None:
-            return render(request, 'author/author_dashboard.html', {"page": "dashboard", "papers": papers, 'error': 'No conference available for paper submission'})
-        return render(request, 'author/author_dashboard.html', {"page": "dashboard", "papers": papers, 'conference': conference})
-    
+        try:
+            # get the papers of the author
+            author = Author.objects.get(login_token=request.session['token'])
+            # get the papers of the author that should be 5 recent papers
+            papers = Paper.objects.filter(author_id=author).order_by('-id')[:5]
+            # get the conference which is available for paper submission
+            current_date = timezone.now().date()
+            conference = Conference.objects.get(paper_submission_deadline__gte=current_date)
+            if conference == None:
+                return render(request, 'author/author_dashboard.html', {"page": "dashboard", "papers": papers,
+                                                                        'error': 'No conference available for paper submission'})
+            return render(request, 'author/author_dashboard.html',
+                          {"page": "dashboard", "papers": papers, 'conference': conference})
+        except:
+            return render(request, 'author/author_dashboard.html')
+
 
 # Author Sample View
 @login_required
@@ -268,18 +276,19 @@ class AuthorPaperUploadView(View):
 
             # if conference is not available
             if conference == None:
-                return render(request, 'author/author_upload_paper.html', {'error': 'No conference available for paper submission'})
+                return render(request, 'author/author_upload_paper.html',
+                              {'error': 'No conference available for paper submission'})
 
             papers = Paper.objects.filter(author_id=author, conference_id=conference)
             if papers.count() > 0:
-                return render(request, 'author/author_upload_paper.html', {'error': 'You have already submitted a paper for this conference'})
-            
-
+                return render(request, 'author/author_upload_paper.html',
+                              {'error': 'You have already submitted a paper for this conference'})
 
             return render(request, 'author/author_upload_paper.html', {'conference': conference})
         except Exception as e:
             print(e)
-            return render(request, 'author/author_upload_paper.html', {'error': 'No conference available for paper submission'})
+            return render(request, 'author/author_upload_paper.html',
+                          {'error': 'No conference available for paper submission'})
 
     # POST request
     def post(self, request, author):
@@ -378,7 +387,6 @@ class AuthorViewPaperView(View):
             return render(request, 'author/author_paper_by_id.html', {"page": "view_paper", "paper": paper})
         except:
             return render(request, 'author/author_paper_by_id.html', {"page": "view_paper", "error": "Paper not found"})
-        
 
 
 # Author Contact View
@@ -403,6 +411,3 @@ class AuthorContactView(View):
             return render(request, 'author/author_contact.html', {'success': 'Message sent successfully'})
         except:
             return render(request, 'author/author_contact.html', {'error': 'Message sending failed'})
-
-    
-
