@@ -148,14 +148,6 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-# mail settings
-# outlook smtp config
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp-mail.outlook.com'
-# EMAIL_USE_TLS = True
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 's.rsolutions@outlook.com'
-# EMAIL_HOST_PASSWORD = 'klu@2002'
 
 
 # SMTP CONFIG
@@ -163,7 +155,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.wpless.com' 
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'support@wpless.com'
-EMAIL_HOST_PASSWORD = 'charansai@123'
+EMAIL_HOST_PASSWORD = ''
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 
